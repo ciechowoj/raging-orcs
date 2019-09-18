@@ -18,7 +18,7 @@ The editor has a simple command line and a simple command line history. By defau
 + Because of the drivers issues on Linux the sound effects have a big latency
 
 # Screenshot from the gameplay
-![Screenshot](https://github.com/ciechowoj/ax-breakout/blob/master/ax-breakout.png "Screenshot")
+![Gameplay](https://github.com/ciechowoj/raging-orcs/blob/master/game.png "Gameplay")
 
 # Screenshot from the editor
-![Screenshot](https://github.com/ciechowoj/ax-breakout/blob/master/ax-breakout.png "Screenshot")
+![Editor](https://github.com/ciechowoj/raging-orcs/blob/master/editor.png "Editor")
