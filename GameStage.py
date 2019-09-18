@@ -1,8 +1,8 @@
 ﻿from utilities import *
 from SoundSystem import *
 
-FONT_BIG = pygame.font.Font("data/deutsch.ttf", 64)
-FONT_SMALL = pygame.font.Font("data/deutsch.ttf", 32)
+FONT_BIG = pygame.font.Font("data/Deutsch.ttf", 64)
+FONT_SMALL = pygame.font.Font("data/Deutsch.ttf", 32)
 
 class GameStage:
     "Klasa bazowa dla stadiów gry, stadiami mogą być np. rozgrywka, menu główne."
@@ -54,7 +54,7 @@ class GameStage:
                 counter = self._sysfont.render("ms: " + str(int(average * 1000)) + " fps: " + str(int(1.0 / average)), False, (255, 0, 0))
                 self._screen.blit(counter, (0, 0))
             pygame.display.update()
-            
+
         return self._next_stage
 
     def on_event(self, event):
