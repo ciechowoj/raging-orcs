@@ -20,7 +20,7 @@ class Environment:
     """
     Stala okreslajaca jaka najdluzsza droge moze zwrocic findPath (Poprawia wydajnosc - nizsza stala = mniej szukania)
     """
-    
+
     def __init__(self, tile_size = TILE_SIZE):
         # environment
         self._terrain_grid = TerrainGrid(tile_size)
@@ -42,7 +42,7 @@ class Environment:
         self._players = []
 
         self.resize(vec2(50, 50))
-        
+
     def load(self, loader):
         """Wczytuje mapę z podanego loadera."""
         self._terrain_grid = loader.get_terrain_grid()
@@ -78,7 +78,7 @@ class Environment:
         for object in self._dynamic_objects:
             if dist(object.get_position(), position) < Environment.WARN_DISTANCE:
                 object.notify(message)
-            
+
     def reachable(self, point):
         """Okresla czy do danego punktu (kwadratu) terenu da sie wejsc - identyczna z is_reachable"""
         return not self._terrain_grid.get_flags(point.ifloor())
@@ -106,7 +106,7 @@ class Environment:
     def redraw(self, surface, position, time, collisions = False):
         """Odrysowywuje środowisko."""
         self._create_buffers(surface)
-        
+
         surface_size = vec2(surface.get_size())
         viewport_pos = (world_to_screen(position) - surface_size / 2).floor()
         displacement = self._prev_viewport_pos - viewport_pos
@@ -135,7 +135,7 @@ class Environment:
             radius_sq = d_pos.lengthsq()
             if radius_sq < redraw_radius_sq:
                 object.redraw(surface, viewport_pos, time, self._visible_objects, self._pickable_objects)
-        
+
         self._visible_objects.sort(key = lambda x: x[1])
         for object in self._visible_objects:
             surface.blit(object[0][0], object[2], object[0][1])
@@ -178,7 +178,7 @@ class Environment:
             self._previous_position = vec2(-0xfffffff, -0xfffffff)
         if self._current_buffer == None:
             self._current_buffer = pygame.Surface(required_size.intcpl())
-    
+
     def _swap_buffers(self):
         tmp = self._current_buffer
         self._current_buffer = self._previous_buffer
@@ -198,14 +198,14 @@ class Environment:
             a1,b1 = pair1
             a2,b2 = pair2
             return (a1+a2, b1+b2)
-    
+
         def manhattanDis(pair1, pair2):
             a1,b1 = pair1
             a2,b2 = pair2
             t0 = a2-a1
             t1 = b2-b1
             return ((t0*t0+t1*t1))
-        
+
         def seqPlus(table, pair):
             tableNew = table[:]
             tableNew.append(pair)
@@ -217,26 +217,26 @@ class Environment:
                 if f(obj):
                     newTable.append(obj)
             return newTable
-         
+
         def findPathAux(self, startPoint, endPoint):
             reached = set()
             unchecked = PriorityQueue()
-            
+
             moves = {(i,j) for i in [-1,0,1] for j in [-1,0,1]}
             moves.remove((0,0))
-            
+
             count=0
             unchecked.put((0,startPoint,[]))
             while not unchecked.empty():
                 prior, point, seq = unchecked.get()
-      
+
                 if point == endPoint:
                     return seq
-                
+
                 #odcinaj jesli przewidywana droga bedzie zbyt dluga
                 if prior > self.FIND_PATH_MAX_DIST:
                     return []
-                              
+
                 if not point in reached:
                     reached.add(point)
                     for move in moves:
@@ -250,7 +250,7 @@ class Environment:
             if rpoints != []:
                 startPoint = rpoints[0].couple()
             else:
-                print("FindPath Error: startPoint unreachable and has not reachable neighbours")
+                # print("FindPath Error: startPoint unreachable and has not reachable neighbours")
                 return []
         endPointVec = vec2(endPoint)
         if not self.reachable(endPointVec):
@@ -258,12 +258,12 @@ class Environment:
             if rpoints != []:
                 endPoint = rpoints[0].couple()
             else:
-                print("FindPath Error: endPoint unreachable and has not reachable neighbours")
+                # print("FindPath Error: endPoint unreachable and has not reachable neighbours")
                 return []
-                
+
         seq = findPathAux(self, startPoint, endPoint)
-        if seq == None: 
-            print("FindPath Error: None path of given length exists")
+        if seq == None:
+            # print("FindPath Error: None path of given length exists")
             return []
         seqNew = []
         acc = last = startPoint

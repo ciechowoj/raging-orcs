@@ -13,6 +13,7 @@ import pygame.gfxdraw
 from pygame.locals import *
 from pygame import transform
 from collections import namedtuple
+import threading
 
 class vec2:
     """
@@ -27,7 +28,7 @@ class vec2:
         if isinstance(x, vec2):
             self.x = x.x
             self.y = x.y
-            return    
+            return
         self.x = x
         self.y = y
 
@@ -104,7 +105,7 @@ class vec2:
 
     def intcpl(self):
         """
-        Zwraca krotke współrzędnych skonwertowanych do int'a. 
+        Zwraca krotke współrzędnych skonwertowanych do int'a.
         Przydatne przy przekazywaniu argumentów do pygame'owych funkcji rysujących.
         """
         return int(self.x), int(self.y)
@@ -263,7 +264,7 @@ def create_tile_mask(tile_size):
                 mask.set_at((x, y), (255, 255, 255, 255))
     mask.unlock()
     return mask
-        
+
 def create_blend_mask(number, tile_size):
     """
     Tworzy maskę do mieszania kolorów, zawiera kanał alpha odpowiednio interpolowany po równoległoboku.
@@ -387,7 +388,7 @@ def create_shield_sprite(radius, color):
             dy = y - radius
             if sqrt(dx * dx + dy * dy) <= radius:
                 surface.set_at((x, y), my_lerp(color[0], color[1], x / double_radius))
-    
+
     rotated = pygame.transform.rotate(surface, 45)
     offset = (vec2(rotated.get_size()) - vec2(surface.get_size())) // 2
 
@@ -441,3 +442,15 @@ def check_collision(position0, position1, radius0, radius1):
     difference = position0 - position1
     distance = difference.length()
     return distance < radius0 + radius1
+
+def Issue20891_workaround():
+    # PyGILState_Ensure on non-Python thread causes fatal error
+
+    class MyThread (threading.Thread):
+        def __init__(self):
+            threading.Thread.__init__(self)
+
+        def run (self):
+            pass
+
+    MyThread().start()

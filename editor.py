@@ -1,4 +1,5 @@
 ﻿from utilities import *
+Issue20891_workaround()
 screen = initialize_pygame(vec2(768, 768), True)
 from Gameplay import *
 from Environment import *
@@ -29,14 +30,14 @@ class EditorGUI:
         self._left_delete = False
         self._right_delete = False
         self._command_line = ""
-        self._command_history = ['static "data/tree0.png"', 'load "data\level0.txt"']
+        self._command_history = ['static "data/tree0.png"', 'load "data/level.dat"']
         self._command_index = 0
         self._current_command = ""
 
         self._left_area = rect(0, 0, EditorGUI.GRID_SIZE + TILE_SIZE.x, EditorGUI.GRID_SIZE * EditorGUI.SIDE_HEIGHT)
         self._right_area = rect(size.x - EditorGUI.GRID_SIZE - TILE_SIZE.x, 0, EditorGUI.GRID_SIZE + TILE_SIZE.x, EditorGUI.GRID_SIZE * EditorGUI.SIDE_HEIGHT)
         self._bottom_area = rect(0, size.y - EditorGUI.GRID_SIZE * EditorGUI.BOTTOM_HEIGHT, size.x, EditorGUI.GRID_SIZE * EditorGUI.BOTTOM_HEIGHT)
-        
+
         self._left_static_icons = []
         self._left_dynamic_icons = []
         self._right_icons = []
@@ -48,10 +49,10 @@ class EditorGUI:
         GRID_SIZE = EditorGUI.GRID_SIZE
         imgui = self._imgui
         imgui.begin(surface)
-        
+
         self._left_slider = imgui.slider(1, self._left_slider, rect(self._left_area.x, self._left_area.y, GRID_SIZE, self._left_area.h - GRID_SIZE * 3), GRID_SIZE)
         self._right_slider = imgui.slider(2, self._right_slider, rect(self._right_area.x + TILE_SIZE.x, self._right_area.y, GRID_SIZE, self._right_area.h - GRID_SIZE * 3), GRID_SIZE)
-        
+
         static = imgui.switch(3, "static", rect(self._left_area.x, self._left_area.y + self._left_area.h - GRID_SIZE * 3, self._left_area.w, GRID_SIZE), self._edit_mode == EDIT_MODE_STATIC)
         if static: self._edit_mode = EDIT_MODE_STATIC
         dynamic = imgui.switch(4, "dynamic", rect(self._left_area.x, self._left_area.y + self._left_area.h - GRID_SIZE * 2, self._left_area.w, GRID_SIZE), self._edit_mode == EDIT_MODE_DYNAMIC)
@@ -168,7 +169,7 @@ class Editor(GameStage):
 
     def __init__(self, screen):
         super(Editor, self).__init__(screen)
-        
+
         self._editor_gui = EditorGUI(vec2(screen.get_size()))
         if self._editor_gui.get_edit_mode() != EDIT_MODE_STATIC:
             self._editor_gui.set_left_dynamic_icons(DYNAMIC_OBJECTS)
@@ -223,7 +224,7 @@ class Editor(GameStage):
                     self._brush_visible = True
                     if self._lmb_drag and (self._editor_gui.get_edit_mode() == EDIT_MODE_TERRAIN or self._editor_gui.get_collision()):
                         self._edit()
-        
+
         return self._exit
 
     def on_update(self, delta, current):
@@ -234,7 +235,7 @@ class Editor(GameStage):
     def on_redraw(self, surface, delta, current):
         """Odrysowanie stanu edytora."""
         self._environment.redraw(surface, self._position, current, self._editor_gui.get_collision())
-        
+
         if self._brush_visible and not self._rmb_drag and self._editor_gui.get_edit_mode() != EDIT_MODE_DYNAMIC:
             first = -self._brush_size // 2 + 1
             last = first + self._brush_size
@@ -288,7 +289,7 @@ class Editor(GameStage):
                 loader.load(paths[0])
             except:
                 result = False
-            
+
             if result:
                 self._environment.load(loader)
                 self._terrain_grid_sprites = loader.get_terrain_grid_sprites()
